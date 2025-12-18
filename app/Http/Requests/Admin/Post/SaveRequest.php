@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests\Category;
+namespace App\Http\Requests\Admin\Post;
 
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
@@ -23,7 +23,11 @@ class SaveRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required', 'string', 'max:255'],
+            'title' => ['required', 'string', 'max:255'],
+            'content' => ['required', 'string'],
+            'image' => ['nullable', 'image:jpeg,png,jpg,gif,svg', 'max:2048'],
+            'category_id' => ['required', 'integer', 'exists:categories,id'],
+            'tags' => ['required', 'string' ],
         ];
     }
 }

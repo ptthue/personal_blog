@@ -1,6 +1,7 @@
 <x-app-layout>
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+
             @if(session()->has('success'))
                 <x-alert-success :messages="session('success')" />
             @endif
@@ -10,14 +11,14 @@
                 <!-- Table Header with Search -->
                 <div class="p-4 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/80">
                     <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                        <h3 class="text-lg font-medium text-gray-800 dark:text-gray-200">Categories</h3>
+                        <h3 class="text-lg font-medium text-gray-800 dark:text-gray-200">Posts</h3>
                     </div>
                 </div>
 
                 <!-- Action Buttons -->
                 <div class="p-4 border-b border-gray-200 dark:border-gray-700">
                     <div class="flex flex-wrap gap-2">
-                        <a href="{{ route('admin.categories.create') }}" class="hover:bg-blue-400 group flex items-center rounded-md bg-blue-500 text-white text-sm font-medium pl-2 pr-3 py-2 shadow-sm">
+                        <a href="{{ route('admin.posts.create') }}" class="hover:bg-blue-400 group flex items-center rounded-md bg-blue-500 text-white text-sm font-medium pl-2 pr-3 py-2 shadow-sm">
                             <svg width="20" height="20" fill="currentColor" class="mr-2" aria-hidden="true">
                                 <path d="M10 5a1 1 0 0 1 1 1v3h3a1 1 0 1 1 0 2h-3v3a1 1 0 1 1-2 0v-3H6a1 1 0 1 1 0-2h3V6a1 1 0 0 1 1-1Z" />
                             </svg>
@@ -34,7 +35,35 @@
                             <th scope="col"
                                 class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                                 <div class="flex items-center">
-                                    Name
+                                    Title
+                                </div>
+                            </th>
+
+                            <th scope="col"
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                <div class="flex items-center">
+                                    Author
+                                </div>
+                            </th>
+
+                            <th scope="col"
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                <div class="flex items-center">
+                                    Category
+                                </div>
+                            </th>
+
+                            <th scope="col"
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                <div class="flex items-center">
+                                    Tags
+                                </div>
+                            </th>
+
+                            <th scope="col"
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                <div class="flex items-center">
+                                    Image
                                 </div>
                             </th>
 
@@ -45,15 +74,47 @@
                         </tr>
                         </thead>
                         <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-                        @foreach($categories as $category)
+                        @foreach ($posts as $post)
                             <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50">
                                 <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="text-sm text-gray-900 dark:text-gray-100">{{ $category['name'] }}</div>
+                                    <div class="text-sm text-gray-900 dark:text-gray-100">{{ $post->title }}</div>
+                                </td>
+
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm text-gray-900 dark:text-gray-100">{{ $post->user->name }}</div>
+                                </td>
+
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm text-gray-900 dark:text-gray-100">
+                                        {{ $post->category->name }}
+                                    </div>
+                                </td>
+
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="flex flex-wrap gap-2">
+                                        @foreach ($post->tags as $tag)
+                                            <span
+                                                class="bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-md px-2 py-1 text-xs">
+                                                    {{ $tag->name }}
+                                                </span>
+                                        @endforeach
+                                    </div>
+                                </td>
+
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm text-gray-900 dark:text-gray-100">
+                                        @if ($post->image_path)
+                                            <img src="{{ asset('storage/uploads/posts/' . $post->image_path) }}"
+                                                 alt="{{ $post->title }}" class="w-16 h-16 object-cover rounded-md">
+                                        @else
+                                            <span class="text-gray-500 dark:text-gray-400">No image</span>
+                                        @endif
+                                    </div>
                                 </td>
 
                                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                     <div class="flex justify-end space-x-2">
-                                        <a href="{{ route('admin.categories.edit', $category->id) }}"
+                                        <a href="{{ route('admin.posts.edit', $post->id) }}"
                                            class="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300">
                                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
                                                  viewBox="0 0 24 24" stroke="currentColor">
@@ -61,9 +122,8 @@
                                                       d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                                             </svg>
                                         </a>
-                                        <form action="{{ route('admin.categories.destroy', $category->id) }}"
-                                              method="POST"
-                                              onsubmit="return confirm('Are you sure you want to delete this category?')">
+                                        <form action="{{ route('admin.posts.destroy', $post->id) }}" method="POST"
+                                              onsubmit="return confirm('Are you sure you want to delete this post?')">
                                             @csrf
                                             @method('DELETE')
                                             <button
@@ -84,7 +144,7 @@
                     </table>
 
                     <div class="mt-4 p-6">
-                        {{ $categories->links() }}
+                        {{ $posts->links() }}
                     </div>
                 </div>
             </div>

@@ -1,6 +1,7 @@
 <?php
 
-use App\Http\Controllers\Category\CategoryController;
+use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\PostController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -21,6 +22,15 @@ Route::middleware('auth')->group(function () {
             Route::get('/{category}/edit', [CategoryController::class, 'edit'])->name('categories.edit');
             Route::put('/{category}/update', [CategoryController::class, 'update'])->name('categories.update');
             Route::delete('/{category}/destroy', [CategoryController::class, 'destroy'])->name('categories.destroy');
+        });
+
+        Route::group(['prefix' => 'posts'], function () {
+            Route::get('/', [PostController::class, 'index'])->name('posts.index');
+            Route::get('/create', [PostController::class, 'create'])->name('posts.create');
+            Route::post('/store', [PostController::class, 'store'])->name('posts.store');
+            Route::get('/{post}/edit', [PostController::class, 'edit'])->name('posts.edit');
+            Route::put('/{post}/update', [PostController::class, 'update'])->name('posts.update');
+            Route::delete('/{post}/destroy', [PostController::class, 'destroy'])->name('posts.destroy');
         });
     });
 

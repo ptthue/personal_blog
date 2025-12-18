@@ -1,14 +1,13 @@
 <?php
 
-namespace App\Http\Controllers\Category;
+namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Category\SaveRequest;
+use App\Http\Requests\Admin\Category\SaveRequest;
 use App\Models\Category;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 
 class CategoryController extends Controller
 {
