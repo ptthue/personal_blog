@@ -2,23 +2,24 @@
 
 namespace App\Services\Admin;
 
+use App\Contracts\ImageStorage;
+use App\ENum\ImageType;
 use App\Models\Post;
 use App\Models\User;
-use App\Services\Common\ImageStorageLocal;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 
 class PostService
 {
     public function __construct(
-        private readonly ImageStorageLocal $imageStorage,
+        private readonly ImageStorage $imageStorage,
         private readonly TagService $tagService,
     ) {}
 
     public function store(User $user, array $data, ?UploadedFile $file): void
     {
         DB::transaction(function () use ($user, $data, $file) {
-            $imagePath = $this->imageStorage->store($file, 'uploads/posts', 'public');
+            $imagePath = $this->imageStorage->store($file, ImageType::POST);
 
             $post = $user->posts()->create([
                 'title' => $data['title'],
@@ -35,9 +36,9 @@ class PostService
     {
         DB::transaction(function () use ($post, $data, $file) {
             if ($file) {
-                $this->imageStorage->delete($post->image_path, 'uploads/posts', 'public');
+                $this->imageStorage->delete($post->image_path, ImageType::POST);
 
-                $filename = $this->imageStorage->store($file, 'uploads/posts', 'public');
+                $filename = $this->imageStorage->store($file, ImageType::POST);
             }
 
             $post->update([
@@ -60,6 +61,6 @@ class PostService
             $post->delete();
         });
 
-        $this->imageStorage->delete($filename, 'uploads/posts', 'public');
+        $this->imageStorage->delete($filename, ImageType::POST);
     }
 }

@@ -3,7 +3,7 @@
 namespace App\Providers;
 
 use App\Contracts\ImageStorage;
-use App\Services\Common\ImageStorageLocal;
+use App\Infrastructure\ConfigurableImageUploader;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -13,7 +13,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->app->bind(ImageStorage::class, ImageStorageLocal::class);
+        $this->app->bind(ImageStorage::class, ConfigurableImageUploader::class);
     }
 
     /**
