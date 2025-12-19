@@ -50,4 +50,16 @@ class PostService
             $this->tagService->syncPostTags($post, $data['tags'] ?? '');
         });
     }
+
+    public function destroy(Post $post): void
+    {
+        $filename = $post->image_path;
+
+        DB::transaction(function () use ($post) {
+            $post->tags()->detach();
+            $post->delete();
+        });
+
+        $this->imageStorage->delete($filename, 'uploads/posts', 'public');
+    }
 }

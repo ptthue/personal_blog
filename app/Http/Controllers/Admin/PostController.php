@@ -68,7 +68,7 @@ class PostController extends Controller
 
     public function destroy(Post $post): RedirectResponse
     {
-        $post->delete();
+        $this->postService->destroy($post);
 
         return redirect()->route('admin.posts.index')
             ->with('success', __('Post deleted successfully.'));
